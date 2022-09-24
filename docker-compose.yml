@@ -1,0 +1,13 @@
+services:
+  transcriber:
+    restart: unless-stopped
+    image: rsdo/ds2/nemo-asr:latest
+    build: .
+    ports:
+      - 8000:8000
+    volumes:
+      - type: bind
+        source: ./models/v1.5
+        target: /opt/asr/models/v1.5
+        read_only: true
+

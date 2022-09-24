@@ -1,0 +1,7 @@
+.env
+_*/
+venv/
+
+models/
+temp/
+*.log

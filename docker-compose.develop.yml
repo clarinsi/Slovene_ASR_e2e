@@ -1,0 +1,7 @@
+services:
+  transcriber:
+    volumes:
+      - type: bind
+        source: .
+        target: /opt/asr
+

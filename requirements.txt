@@ -1,0 +1,4 @@
+arrow
+fastapi[all]
+python-multipart
+petname

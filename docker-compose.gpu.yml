@@ -1,0 +1,9 @@
+services:
+  transcriber:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+              - gpu
+
