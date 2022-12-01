@@ -7,7 +7,7 @@ services:
       - 8000:8000
     volumes:
       - type: bind
-        source: ./models/v1.5
-        target: /opt/asr/models/v1.5
+        source: ./models/v2.0
+        target: /opt/asr/models/v2.0
         read_only: true
 
