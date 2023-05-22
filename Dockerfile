@@ -10,8 +10,7 @@ RUN apt-get update \
     && cd /workspace/nemo \
     && git checkout v1.11.0
     
-RUN pip install llvmlite --ignore-installed
-RUN cd /workspace/nemo && pip install --ignore-installed -e .
+RUN cd /workspace/nemo && pip install -e .[all] --ignore-installed llvmlite
 
 FROM nemo as service
 
