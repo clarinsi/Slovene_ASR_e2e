@@ -8,8 +8,10 @@ RUN apt-get update \
     && python3 -m pip install --upgrade pip \
     && git clone https://github.com/NVIDIA/NeMo.git /workspace/nemo \
     && cd /workspace/nemo \
-    && git checkout v1.11.0 \
-    && ./reinstall.sh
+    && git checkout v1.11.0
+    
+RUN pip install llvmlite --ignore-installed
+RUN cd /workspace/nemo && pip install --ignore-installed -e .
 
 FROM nemo as service
 
