@@ -10,7 +10,11 @@ RUN apt-get update \
     && cd /workspace/nemo \
     && git checkout v1.11.0
     
-RUN cd /workspace/nemo && pip install -e .[all] --ignore-installed llvmlite
+RUN rm -rf /opt/conda/lib/python3.8/site-packages/llvmlite-0.36.0-py3.8.egg-info 
+
+RUN cd /workspace/nemo && pip install llvmlite==0.39.1 --ignore-installed && ./reinstall.sh
+
+RUN pip install protobuf==3.20.1
 
 FROM nemo as service
 
