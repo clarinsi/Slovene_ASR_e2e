@@ -2,3 +2,6 @@ arrow
 fastapi[all]
 python-multipart
 petname
+pytorch_lightning
+hydra-core
+pydub
