@@ -5,3 +5,5 @@ petname
 pytorch_lightning
 hydra-core
 pydub
+webdataset
+braceexpand
