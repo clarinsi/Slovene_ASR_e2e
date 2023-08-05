@@ -2,6 +2,6 @@
 _*/
 venv/
 
-models/
+models/*
 temp/
 *.log

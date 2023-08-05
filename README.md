@@ -8,7 +8,7 @@ The API provides two endpoints `/api/healthcheck`, to retrieve the service statu
 
 - docker >= 20.10.17
 - docker compose >= 2.6.0
-- NeMo model and `model.info`
+- NeMo model and `model.info` 
 
 # Model.info
 
@@ -35,6 +35,14 @@ The Conformer CTC BPE E2E Automated Speech Recognition model developed as part o
 # Deployment
 
 Run `docker compose up -d` to deploy on cpu or `docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d` to run on gpu.
+
+Or run `./start.sh` which will download the model if it doesn't exist locally and start the docker.
+
+# Usage
+
+After docker container has started service is available on http://localhost:8000
+
+the /api/transcribe endpoints accepts audio_file POST parameter which should be the audio file to transcribe. 
 
 # Approximate memory consumption for cpu deployment
 
