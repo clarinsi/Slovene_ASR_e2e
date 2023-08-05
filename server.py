@@ -15,8 +15,12 @@ from pydub import AudioSegment
 import yaml
 import os
 
-from fastapi import FastAPI, HTTPException, Body, File, UploadFile
+from fastapi import FastAPI, HTTPException, Body, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
 import uvicorn
 
 import torch
@@ -33,7 +37,7 @@ else:
     def autocast():
         yield
 
-_AUDIO_DURATION_SECONDS_LIMIT = 300
+_AUDIO_DURATION_SECONDS_LIMIT = 60 * 5
 _AUDIO_FILE_SIZE_LIMIT = 44 + _AUDIO_DURATION_SECONDS_LIMIT*16000*2
 _use_gpu_if_available = True
 _model_tag = "unknown"
@@ -112,6 +116,14 @@ healthCheckResponseExamples = {
   },
 }
 
+# Set up Jinja2 templates
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 
 @app.get(
   "/api/healthCheck",
@@ -167,17 +179,24 @@ def transcribe_file(audio_file: UploadFile = File( ..., title="Audio file", desc
     logging.warning(f'{audio_file.filename}, file size exceded {audio_file_size}b [max {_AUDIO_FILE_SIZE_LIMIT}b]')
     shutil.rmtree(session_path, ignore_errors=True)
     raise HTTPException(status_code=400, detail=f"Bad request.")
-
+  
   audio = AudioSegment.from_file(f"{audio_file.filename}")
   if audio.duration_seconds > _AUDIO_DURATION_SECONDS_LIMIT:
     logging.warning(f'{audio_file.filename}, audio duration exceded {len(audio)}ms [max {_AUDIO_DURATION_SECONDS_LIMIT}s]')
     shutil.rmtree(session_path, ignore_errors=True)
     raise HTTPException(status_code=400, detail=f"Bad request.")
+  
+  if audio.channels != 1 or audio.frame_rate != 16000 or audio.sample_width != 2:
+        # Convert to 16-bit, 16kHz, mono WAV format
+        print("converting to 16khz mono wav")
+        audio = audio.set_frame_rate(16000).set_channels(1).set_sample_width(2)
+        audio.export(audio_file.filename, format='wav')
 
   if _use_gpu_if_available and torch.cuda.is_available():
       models[_model_tag].nemo = models[_model_tag].nemo.cuda()
 
   models[_model_tag].active += 1
+  
   try:
     with autocast():
       with torch.no_grad():

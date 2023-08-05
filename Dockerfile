@@ -9,9 +9,12 @@ RUN apt-get update \
 FROM nemo as service
 
 ARG DEBIAN_FRONTEND=noninteractive
+RUN pip install --upgrade pip
 
 COPY . /opt/asr
 RUN python3 -m pip install -r /opt/asr/requirements.txt
 WORKDIR /opt/asr
+
+RUN python3 -m pip install pydantic==1.8.2 
 
 ENTRYPOINT [ "python3", "server.py" ]
